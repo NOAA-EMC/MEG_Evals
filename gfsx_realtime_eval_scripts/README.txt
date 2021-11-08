@@ -42,7 +42,7 @@ source ~/.bashrc
 --------------------------------------------------------------------------------
 
 To retrieve the GFSX real-time parallel scripts:
-git clone https://github.com/NOAA-EMC
+git clone https://github.com/NOAA-EMC/MEG_Evals.git
 in your /gpfs/dell2/emc/verification/save/ directory
 The scripts retrieve operational and parallel GFS forecast data from forecast hr 0 to forecast hr 240 every 3 hrs, and generate comparison graphics.
 

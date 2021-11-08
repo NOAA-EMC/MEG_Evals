@@ -1,0 +1,61 @@
+#! /bin/ksh
+#
+##=============================================================================
+## Manual Copy of Forecast Files
+## Description: Transfer para GFS forecast data from WCOSS Dell directory
+## Contributors: Shannon Shields (NOAA/NWS/NCEP/EMC)
+## Last Modified: Oct. 14, 2021
+##=============================================================================
+
+set -x
+
+cyc=`cut -c 9-10 holddate.txt` 
+year=`cut -c 1-4 holddate.txt`
+month=`cut -c 5-6 holddate.txt`
+day=`cut -c 7-8 holddate.txt`
+ymd=${year}${month}${day}
+
+mkdir /gpfs/hps3/stmp/Shannon.Shields/
+mkdir /gpfs/hps3/stmp/Shannon.Shields/gfsx.${ymd}
+mkdir /gpfs/hps3/stmp/Shannon.Shields/gfsx.${ymd}/${cyc}
+cd /gpfs/hps3/stmp/Shannon.Shields/gfsx.${ymd}/${cyc}
+cp /gpfs/dell2/emc/verification/save/Shannon.Shields/gfsv16/holddate.txt .
+
+year=`cut -c 1-4 holddate.txt`
+month=`cut -c 5-6 holddate.txt`
+day=`cut -c 7-8 holddate.txt`
+hour=`cut -c 9-10 holddate.txt`
+ymd=${year}${month}${day}
+ymdh=${year}${month}${day}${hour}
+
+echo $ymd
+
+icnt=1
+start=0
+  while [ $icnt -lt 2160 ]
+  do
+    for i in {${start}..80}
+    do
+      
+      fhr=$((${i}*3))
+      typeset -Z3 fhr
+      ssh venus "test -e :/gpfs/dell1/nco/ops/com/gfs/para/gfs.${ymd}/${cyc}/atmos/gfs.t${cyc}z.pgrb2.0p25.f${fhr}"
+      echo $?
+      if [ $? -eq 0 ]; then
+        sleep 5
+        echo 'scp from venus'
+        /usr/bin/scp venus:/gpfs/dell1/nco/ops/com/gfs/para/gfs.${ymd}/${cyc}/atmos/gfs.t${cyc}z.pgrb2.0p25.f${fhr} .
+        if [ $fhr -eq 240 ]; then
+          icnt=$((icnt + 2000))
+          break
+        fi
+        start=$((start + 1)) 
+      else
+        icnt=$((icnt + 1))
+        sleep 5
+      fi
+    done
+  done
+
+exit
+

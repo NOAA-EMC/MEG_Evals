@@ -1,0 +1,38 @@
+#!/bin/ksh
+## ============================================================================
+## Run Plotting Scripts for North America
+## Description: Runs NCL scripts to generate images for North America domain
+## Contributors: Shannon Shields (NOAA/NWS/NCEP/EMC)
+## Last Modified: Oct. 14, 2021
+## ============================================================================
+
+echo 'into'
+
+source /u/Shannon.Shields/.profile
+cyc=`cut -c 9-10 holddate.txt`
+year=`cut -c 1-4 holddate.txt`
+month=`cut -c 5-6 holddate.txt`
+day=`cut -c 7-8 holddate.txt`
+hour=`cut -c 9-10 holddate.txt`
+dow=`cut -c 11-13 holddate.txt`
+ymd=${year}${month}${day}
+ymdh=${year}${month}${day}${hour}
+ymdhdow=${year}${month}${day}${hour}${dow}
+
+ncl scriptyyyymmddhh="${ymdh}" 'scriptregion="us"' /gpfs/dell2/emc/verification/save/Shannon.Shields/gfsv16/plot_gfsxlambert250wind.ncl &
+ncl scriptyyyymmddhh="${ymdh}" 'scriptregion="us"' /gpfs/dell2/emc/verification/save/Shannon.Shields/gfsv16/plot_gfsxlambert2mdew.ncl &
+ncl scriptyyyymmddhh="${ymdh}" 'scriptregion="us"' /gpfs/dell2/emc/verification/save/Shannon.Shields/gfsv16/plot_gfsxlambert2mt.ncl &
+ncl scriptyyyymmddhh="${ymdh}" 'scriptregion="us"' /gpfs/dell2/emc/verification/save/Shannon.Shields/gfsv16/plot_gfsxlambert500.ncl &
+ncl scriptyyyymmddhh="${ymdh}" 'scriptregion="us"' /gpfs/dell2/emc/verification/save/Shannon.Shields/gfsv16/plot_gfsxlambert3hprecip.ncl &
+ncl scriptyyyymmddhh="${ymdh}" 'scriptregion="us"' /gpfs/dell2/emc/verification/save/Shannon.Shields/gfsv16/plot_gfsxlambertsnod.ncl &
+ncl scriptyyyymmddhh="${ymdh}" 'scriptregion="us"' /gpfs/dell2/emc/verification/save/Shannon.Shields/gfsv16/plot_gfsxlambert24hweasd.ncl &
+ncl scriptyyyymmddhh="${ymdh}" 'scriptregion="us"' /gpfs/dell2/emc/verification/save/Shannon.Shields/gfsv16/plot_gfsxlambert1kmref.ncl &
+ncl scriptyyyymmddhh="${ymdh}" 'scriptregion="us"' /gpfs/dell2/emc/verification/save/Shannon.Shields/gfsv16/plot_gfsxlambertref.ncl &
+ncl scriptyyyymmddhh="${ymdh}" 'scriptregion="us"' /gpfs/dell2/emc/verification/save/Shannon.Shields/gfsv16/plot_gfsxlambertlowcloudavg.ncl &
+ncl scriptyyyymmddhh="${ymdh}" 'scriptregion="us"' /gpfs/dell2/emc/verification/save/Shannon.Shields/gfsv16/plot_gfsxlambertlowcloud.ncl &
+ncl scriptyyyymmddhh="${ymdh}" 'scriptregion="us"' /gpfs/dell2/emc/verification/save/Shannon.Shields/gfsv16/plot_gfsxlambertPBLh.ncl &
+wait
+
+exit
+
+

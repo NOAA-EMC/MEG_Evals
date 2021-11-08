@@ -1,0 +1,80 @@
+#!/bin/ksh --login
+#
+#BSUB -o /gpfs/dell2/emc/verification/save/Shannon.Shields/gfsv16/gfsx.out.%J
+#BSUB -e /gpfs/dell2/emc/verification/save/Shannon.Shields/gfsv16/gfsx.err.%J
+#BSUB -J gfsx
+#BSUB -W 08:00
+#BSUB -P GFS-DEV
+#BSUB -M 1000
+#BSUB -q "devhigh"
+#BSUB -extsched 'CRAYLINUX[]'
+#
+export NODES=15
+#
+
+set +x
+
+##=============================================================================
+## Generate GFS Comparison Images and Update HTML
+## Description: Runs all launchgfsximages to generate GFS comparison graphics
+## and then updates gfsximages.html with the current cycle run
+## Contributors: Shannon Shields (NOAA/NWS/NCEP/EMC)
+## Last Modified: Oct. 18, 2021
+##=============================================================================
+
+source /u/Shannon.Shields/.profile
+module load cfp-intel-sandybridge/2.0.1
+set -x
+
+echo intoscript
+year=`cut -c 1-4 holddate.txt`
+month=`cut -c 5-6 holddate.txt`
+day=`cut -c 7-8 holddate.txt`
+hour=`cut -c 9-10 holddate.txt`
+cyc=`cut -c 9-10 holddate.txt`
+ymdh=${year}${month}${day}${hour}
+
+
+set +x
+set -x
+
+
+
+rm poescript
+
+echo "/gpfs/dell2/emc/verification/save/Shannon.Shields/gfsv16/launchgfsximages ${cyc}" >> poescript
+echo "/gpfs/dell2/emc/verification/save/Shannon.Shields/gfsv16/launchgfsximages2 ${cyc}" >> poescript
+echo "/gpfs/dell2/emc/verification/save/Shannon.Shields/gfsv16/launchgfsximages3 ${cyc}" >> poescript
+echo "/gpfs/dell2/emc/verification/save/Shannon.Shields/gfsv16/launchgfsximages4 ${cyc}" >> poescript
+echo "/gpfs/dell2/emc/verification/save/Shannon.Shields/gfsv16/launchgfsximages5 ${cyc}" >> poescript
+echo "/gpfs/dell2/emc/verification/save/Shannon.Shields/gfsv16/launchgfsximages6 ${cyc}" >> poescript
+echo "/gpfs/dell2/emc/verification/save/Shannon.Shields/gfsv16/launchgfsximages7 ${cyc}" >> poescript
+echo "/gpfs/dell2/emc/verification/save/Shannon.Shields/gfsv16/launchgfsximages8 ${cyc}" >> poescript
+echo "/gpfs/dell2/emc/verification/save/Shannon.Shields/gfsv16/launchgfsximages9 ${cyc}" >> poescript
+echo "/gpfs/dell2/emc/verification/save/Shannon.Shields/gfsv16/launchgfsximages10 ${cyc}" >> poescript
+echo "/gpfs/dell2/emc/verification/save/Shannon.Shields/gfsv16/launchgfsximages11 ${cyc}" >> poescript
+echo "/gpfs/dell2/emc/verification/save/Shannon.Shields/gfsv16/launchgfsximages12 ${cyc}" >> poescript
+echo "/gpfs/dell2/emc/verification/save/Shannon.Shields/gfsv16/launchgfsximages13 ${cyc}" >> poescript
+echo "/gpfs/dell2/emc/verification/save/Shannon.Shields/gfsv16/launchgfsximages14 ${cyc}" >> poescript
+echo "/gpfs/dell2/emc/verification/save/Shannon.Shields/gfsv16/launchgfsximages15 ${cyc}" >> poescript
+
+chmod 775 poescript
+#export LSF_PJL_TYPE="intelmpi"
+export MP_PGMMODEL=mpmd
+export MP_CMDFILE=poescript
+#
+# Execute the script.
+
+echo beforepoescript
+aprun -j 1 -n 15 -N 1 -d 1 cfp poescript
+#mpirun.lsf
+echo pastpoescript
+
+cp /gpfs/dell2/emc/verification/save/Shannon.Shields/gfsv16/gfsximages.html .
+cp /gpfs/dell2/emc/verification/save/Shannon.Shields/gfsv16/edit_gfsximages.ksh .
+
+./edit_gfsximages.ksh
+
+unset LSB_SUB_RES_REQ
+bsub < /gpfs/dell2/emc/verification/save/Shannon.Shields/gfsv16/run_ftp_gfsx
+exit
